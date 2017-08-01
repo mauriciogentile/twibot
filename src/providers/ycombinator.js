@@ -1,5 +1,6 @@
 "use strict";
 
+const validUrl = require("valid-url");
 const HtmlProvider = require("./html-provider.js");
 const sourceUrl = "https://news.ycombinator.com";
 
@@ -31,12 +32,17 @@ class Ycombinator extends HtmlProvider {
         $items.each((index, el) => {
             var $el = $(el);
             if ($el.hasClass("athing")) {
-                results.push(parse(index, $el));
+                var entry = tryParse(index, $el);
+                if (entry)
+                    results.push(entry);
             }
         });
 
-        function parse(index, $el) {
+        function tryParse(index, $el) {
             var url = $el.find("td.title a").first().attr("href");
+            if (!validUrl.isUri(url)) {
+                return null;
+            }
             var title = $el.find("td.title a").first().text();
             var data = $($itemInfo[index]).text();
             var commentsStr = data.substr(data.lastIndexOf("|") + 1);

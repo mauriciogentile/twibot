@@ -1,5 +1,6 @@
 "use strict";
 
+const validUrl = require("valid-url");
 const HtmlProvider = require("./html-provider.js");
 const sourceUrl = "https://slashdot.org/";
 
@@ -29,13 +30,18 @@ class Slashdot extends HtmlProvider {
 
         $items.each((index, el) => {
             var $el = $(el);
-            results.push(parse(index, $el));
+            var entry = tryParse(index, $el);
+            if (entry)
+                results.push(entry);
         });
 
-        function parse(index, $el) {
+        function tryParse(index, $el) {
             var comments = $el.find(".comment-bubble").first().text();
             var title = $el.find("span.story-title").first().text();
-            var url = "https:" + $el.find("span.story-title").find("a").first().attr("href");
+            var url = $el.find("a.story-sourcelnk").first().attr("href");
+            if (!validUrl.isUri(url)) {
+                return null;
+            }
             var points = Number.parseInt(comments);
             points = isNaN(points) ? 0 : points;
             var item = { url: url, text: title, type: "link", points: points, source: self.name };

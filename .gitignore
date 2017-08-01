@@ -2,3 +2,4 @@ src/node_modules
 *.suo
 src/config.js
 *.user
+src/.vs

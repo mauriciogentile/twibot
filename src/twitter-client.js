@@ -1,17 +1,18 @@
 "use strict";
 
-const twit = require("twit");
+const Twit = require("twit");
 const config = require("./config.js");
-const Twitter = new twit(config);
 
 class TwitterClient {
 
     constructor() {
+        this.twit = new Twit(config.twitter);
     }
 
     retweet(tweetId, cb) {
+        var self = this;
         return new Promise((resolve, reject) => {
-            Twitter.post("statuses/retweet/:id", {
+            self.twit.post("statuses/retweet/:id", {
                 id: tweetId
             }, (err, response) => {
                 if (err) {
@@ -22,9 +23,11 @@ class TwitterClient {
             });
         });
     }
+
     postUpdate(tweet, cb) {
+        var self = this;
         return new Promise((resolve, reject) => {
-            Twitter.post("statuses/update", tweet, (err, response) => {
+            self.twit.post("statuses/update", tweet, (err, response) => {
                 if (err) {
                     reject(err);
                     return;

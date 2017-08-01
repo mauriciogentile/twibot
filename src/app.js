@@ -1,12 +1,14 @@
 "use strict";
 
+const config = require("./config.js");
 const TweetFeeder = require("./providers/composite-feeder.js");
 const TwitterClient = require("./twitter-client");
 const schedule = require("node-schedule");
+const logger = require("./util/logger.js");
 
 const errorHandler = (err, response) => {
     if (err) {
-        console.log("Error tweeting: " + err.message);
+        logger.error("Error tweeting: " + err.message);
     }
 };
 
@@ -23,24 +25,21 @@ const post = (entry) => {
     }
 };
 
-var j = schedule.scheduleJob("0 * * * * *", function () {
-    console.log("Running...");
+var j = schedule.scheduleJob(config.scheduler.rule, function () {
 
     new TweetFeeder().run()
         // pick first two
         .then(results => {
-            console.log(results.length);
-            return results.slice(0, 2);
+            logger.info(results.length);
+            return results[0];
         })
         // post
-        .then(entries => {
-            entries.forEach(entry => {
-                try {
-                    post(entry).catch(errorHandler);
-                }
-                catch (err) {
-                }
-            });
+        .then(entry => {
+            try {
+                post(entry).catch(errorHandler);
+            }
+            catch (err) {
+            }
         })
         .catch(console.log);
 });
