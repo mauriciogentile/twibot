@@ -4,32 +4,26 @@ const winston = require('winston');
 const Mail = require('winston-mail').Mail;
 const config = require("../config.js");
 
-const customLevels = {
-    levels: {
-        debug: 1,
-        info: 3,
-        error: 5,
-        errorNotification: 6
-    }
-};
-
 var logger = new winston.Logger({
     transports: [
         new winston.transports.Console({
             level: "debug",
             colorize: true
+        }),
+        new winston.transports.File({
+            filename: 'logs.txt',
+            level: 'info'
         })
-    ],
-    levels: customLevels.levels
+    ]
 });
 
 /**
  * Configure mail transport
  */
-logger.add(Mail, config.logger.email);
+logger.add(Mail, config.logger.options);
 
 winston.addColors({
-    errorNotification: "red"
+    error: "red"
 });
 
 module.exports = logger;

@@ -28,6 +28,7 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="providers\tweet-feeder.js" />
     <Compile Include="twitter-client.js" />
     <Compile Include="app.js" />
     <Compile Include="providers\slashdot.js" />
@@ -36,6 +37,7 @@
     <Compile Include="config.js" />
     <Compile Include="providers\twitter.js" />
     <Compile Include="providers\ycombinator.js" />
+    <Content Include="config.js.template" />
     <Content Include="package.json" />
     <Content Include="util\logger.js" />
   </ItemGroup>

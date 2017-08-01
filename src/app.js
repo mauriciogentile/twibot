@@ -6,15 +6,15 @@ const TwitterClient = require("./twitter-client");
 const schedule = require("node-schedule");
 const logger = require("./util/logger.js");
 
-const errorHandler = (err, response) => {
+const logError = (err, entry) => {
     if (err) {
-        logger.error("Error tweeting: " + err.message);
+        logger.error("Error tweeting: " + err.message, [entry]);
     }
 };
 
 const post = (entry) => {
-    const client = new TwitterClient();
-    const type = entry.type;
+    let client = new TwitterClient();
+    let type = entry.type;
     switch (type) {
         case 'link':
             return client.postUpdate({ status: entry.text + " " + entry.url });
@@ -25,21 +25,23 @@ const post = (entry) => {
     }
 };
 
-var j = schedule.scheduleJob(config.scheduler.rule, function () {
+// repeate tho inner rutine as configure in rule
+schedule.scheduleJob(config.scheduler.rule, () => {
 
-    new TweetFeeder().run()
-        // pick first two
-        .then(results => {
-            logger.info(results.length);
-            return results[0];
-        })
-        // post
-        .then(entry => {
-            try {
-                post(entry).catch(errorHandler);
+    let pickAndTweet = (results, index) => {
+        let entry = results[index];
+        return post(entry).catch(err => {
+            logError(err, entry);
+            // duplicated tweet, skip & retry
+            if (err.code == 187) {
+                pickAndTweet(results, index + 1);
             }
-            catch (err) {
-            }
-        })
-        .catch(console.log);
+        });
+    };
+
+    new TweetFeeder().run().then(results => {
+        logger.info("Got " + results.length + " entries...");
+        var pick = 0;
+        pickAndTweet(results, 0);
+    }).catch(logError);
 });

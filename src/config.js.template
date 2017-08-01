@@ -9,16 +9,16 @@ module.exports = {
         access_token_secret: 'my-token-secret'
     },
     logger: {
-        email: {
+        options: {
             host: "smtp.gmail.com",
             port: 465,
             ssl: true,
-            username: 'gentilemauricio@gmail.com', // GMAIL ACCOUNT HERE
-            password: 'Gmail_030696',
+            username: 'email@gmail.com',
+            password: 'pass',
             subject: 'twibot',
-            from: 'gentilemauricio@gmail.com',
-            to: 'gentilemauricio@gmail.com',
-            level: 'errorNotification'
+            from: 'email@gmail.com',
+            to: 'email@gmail.com',
+            level: 'error'
         }
     }
 };
