@@ -41,7 +41,6 @@ schedule.scheduleJob(config.scheduler.rule, () => {
 
     new TweetFeeder().run().then(results => {
         logger.info("Got " + results.length + " entries...");
-        var pick = 0;
         pickAndTweet(results, 0);
     }).catch(logError);
 });
