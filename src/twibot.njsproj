@@ -34,11 +34,9 @@
     <Compile Include="providers\composite-feeder.js" />
     <Compile Include="providers\html-provider.js" />
     <Compile Include="config.js" />
-    <Compile Include="providers\index.js" />
     <Compile Include="providers\twitter.js" />
     <Compile Include="providers\ycombinator.js" />
     <Content Include="package.json" />
-    <Content Include="README.md" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="providers\" />
