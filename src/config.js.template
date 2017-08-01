@@ -1,6 +1,24 @@
 module.exports = {
-    consumer_key: 'my-key',
-    consumer_secret: 'my-secret',
-    access_token: 'my-token',
-    access_token_secret: 'my-token-secret'
-}
+    scheduler: {
+        rule: "0 * * * * *"
+    },
+    twitter: {
+        consumer_key: 'my-key',
+        consumer_secret: 'my-secret',
+        access_token: 'my-token',
+        access_token_secret: 'my-token-secret'
+    },
+    logger: {
+        email: {
+            host: "smtp.gmail.com",
+            port: 465,
+            ssl: true,
+            username: 'gentilemauricio@gmail.com', // GMAIL ACCOUNT HERE
+            password: 'Gmail_030696',
+            subject: 'twibot',
+            from: 'gentilemauricio@gmail.com',
+            to: 'gentilemauricio@gmail.com',
+            level: 'errorNotification'
+        }
+    }
+};
