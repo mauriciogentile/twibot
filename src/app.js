@@ -25,22 +25,29 @@ const post = (entry) => {
     }
 };
 
-// repeate tho inner rutine as configure in rule
-schedule.scheduleJob(config.scheduler.rule, () => {
-
+let run = () => {
     let pickAndTweet = (results, index) => {
         let entry = results[index];
-        return post(entry).catch(err => {
-            logError(err, entry);
-            // duplicated tweet, skip & retry
-            if (err.code == 187) {
-                pickAndTweet(results, index + 1);
-            }
-        });
+        return post(entry)
+            .then(() => {
+                logger.info("Entry successfully twitted.", entry);
+            })
+            .catch(err => {
+                logError(err, entry);
+                // duplicated tweet or tweet too long, skip & retry
+                if (err.code == 187 || err.code == 186 || err.code == 327) {
+                    pickAndTweet(results, index + 1);
+                }
+            });
     };
 
     new TweetFeeder().run().then(results => {
         logger.info("Got " + results.length + " entries...");
         pickAndTweet(results, 0);
     }).catch(logError);
-});
+};
+
+// run as configured in rule
+schedule.scheduleJob(config.scheduler.rule, run);
+
+run();

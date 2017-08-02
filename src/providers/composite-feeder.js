@@ -1,8 +1,7 @@
 "use strict";
 
-const Twitter = require("./twitter.js");
-const Ycombinator = require("./ycombinator.js");
-const Slashdot = require("./slashdot.js");
+const path = require("path");
+const providersConfig = require("../config.js").providers;
 
 class CompositeFeeder {
 
@@ -11,16 +10,16 @@ class CompositeFeeder {
     }
 
     run() {
-        var promises = [];
 
-        const providers = [new Twitter("#nodejs, #Nodejs"), new Ycombinator(), new Slashdot()];
+        let providers = this.loadProviders();
+        let promises = [];
 
         providers.forEach(provider => {
             promises.push(provider.run());
         });
 
         return Promise.all(promises)
-            // merge
+            // merge & flatten data
             .then(dataSet => {
                 var results = [];
                 dataSet.forEach(ds => results = results.concat(ds));
@@ -29,6 +28,20 @@ class CompositeFeeder {
             // sort
             .then(data => data.sort((a, b) => b.points - a.points));
     }
+
+    loadProviders() {
+        let providers = [];
+        let files = require("fs").readdirSync(__dirname);
+        providersConfig.forEach(p => {
+            files.forEach((file) => {
+                if (file.endsWith(".js") && file == p.name) {
+                    let provider = require("./" + file);
+                    providers.push(new provider(p.arguments));
+                }
+            })
+        });
+        return providers;
+    };
 }
 
 module.exports = CompositeFeeder;

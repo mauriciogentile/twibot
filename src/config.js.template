@@ -20,5 +20,10 @@ module.exports = {
             to: 'email@gmail.com',
             level: 'error'
         }
-    }
+    },
+	providers: [
+        { name: "ycombinator.js" },
+        { name: "slashdot.js" },
+        { name: "twitter.js", arguments: "#nodejs, #NodeJs, #JavaScript" }
+    ]
 };
