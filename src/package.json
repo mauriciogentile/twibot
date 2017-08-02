@@ -4,7 +4,7 @@
   "description": "A multiple-sourced twitter bot",
   "main": "app.js",
   "author": {
-    "name": "genti"
+    "name": "Mauri Gentile"
   },
   "dependencies": {
     "cheerio": "^1.0.0-rc.2",
