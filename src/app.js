@@ -47,7 +47,8 @@ let run = () => {
     }).catch(logError);
 };
 
-// run as configured in rule
+// run daemon as configured in rule
 schedule.scheduleJob(config.scheduler.rule, run);
 
+// run on start
 run();
