@@ -2,6 +2,7 @@
 
 const Twit = require("twit");
 const config = require("../config.js");
+const logger = require("../util/logger.js");
 
 class Twitter {
 
@@ -25,8 +26,12 @@ class Twitter {
 
     searchTweets(params) {
         return this.twit.get("search/tweets", params).then(response => {
+            if(response.data.statuses.errors) {
+                logger.warn("Error searching Twitter", response.data.statuses.errors);
+                return [];
+            }
             return this.toResult(response.data.statuses);
-        });
+        }).catch(err => logger.error(err));
     }
 
     getHomeTimeline() {
@@ -37,7 +42,7 @@ class Twitter {
 
     toResult(statuses) {
         var results = [];
-        statuses.forEach((status) => {
+        statuses && statuses.forEach((status) => {
             results.push({ id: status.id_str, type: "tweet", text: status.text, points: status.retweet_count, source: this.name });
         });
         return results;
