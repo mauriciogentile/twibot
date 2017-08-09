@@ -4,3 +4,5 @@ src/config.js
 *.user
 src/.vs
 src/logs.txt
+npm-debug.log
+.secrets

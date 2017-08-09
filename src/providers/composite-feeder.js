@@ -1,17 +1,29 @@
 "use strict";
 
 const path = require("path");
-const providersConfig = require("../config.js").providers;
+const logger = require("../util/logger.js");
+const Twitter = require("./twitter.js");
+const Slashdot = require("./slashdot.js");
+const Ycombinator = require("./ycombinator.js");
+
+var _secrets = null;
 
 class CompositeFeeder {
 
-    constructor(search) {
+    constructor(secrets) {
         this.name = "Composite";
+        _secrets = secrets;
     }
 
     run() {
 
-        let providers = this.loadProviders();
+        logger.info("Running " + this.name);
+        logger.info("Loading providers...");
+
+        let providers = this.loadProviders(_secrets);
+
+        logger.info(providers.length + " loaded providers");
+
         let promises = [];
 
         providers.forEach(provider => {
@@ -29,17 +41,15 @@ class CompositeFeeder {
             .then(data => data.sort((a, b) => b.points - a.points));
     }
 
-    loadProviders() {
-        let providers = [];
-        let files = require("fs").readdirSync(__dirname);
-        providersConfig.forEach(p => {
-            files.forEach((file) => {
-                if (file.endsWith(".js") && file == p.name) {
-                    let provider = require("./" + file);
-                    providers.push(new provider(p.arguments));
-                }
-            })
-        });
+    loadProviders(secrets) {
+        
+        let providers = [
+            new Twitter(secrets, "#nodejs, #NodeJs, #JavaScript"),
+            new Twitter(secrets, "@@home_timeline"),
+            new Slashdot(),
+            new Ycombinator()
+        ];
+        
         return providers;
     };
 }

@@ -1,12 +1,17 @@
 "use strict";
 
 const Twit = require("twit");
-const config = require("./config.js");
+//const config = require("./config.js");
 
 class TwitterClient {
 
-    constructor() {
-        this.twit = new Twit(config.twitter);
+    constructor(secrets) {
+        this.twit = new Twit({
+            consumer_key: secrets.TWITTER_CONSUMER_KEY,
+            consumer_secret: secrets.TWITTER_CONSUMER_SECRET,
+            access_token: secrets.TWITTER_ACCESS_TOKEN_KEY,
+            access_token_secret: secrets.TWITTER_ACCESS_TOKEN_SECRET
+        });
     }
 
     retweet(tweetId, cb) {

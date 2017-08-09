@@ -1,8 +1,8 @@
 {
   "name": "twibot",
   "version": "0.1.0",
-  "description": "A multiple-sourced twitter bot",
-  "main": "app.js",
+  "description": "A multi-sourced twitter bot",
+  "main": "src/app.js",
   "author": {
     "name": "Mauri Gentile"
   },
@@ -18,7 +18,10 @@
     "winston-mail": "^1.3.0"
   },
   "scripts": {
-    "install-windows-service": "winser -i",
-    "uninstall-windows-service": "winser -r"
+    "start": "wt create -w -b --secrets-file src/.secrets .",
+    "publish": "wt cron schedule -b --secrets-file src/.secrets 1m ."
+  },
+  "devDependencies": {
+    "wt-cli": "^6.1.0"
   }
 }

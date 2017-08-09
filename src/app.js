@@ -1,19 +1,12 @@
 "use strict";
 
-const config = require("./config.js");
 const TweetFeeder = require("./providers/composite-feeder.js");
 const TwitterClient = require("./twitter-client");
 const schedule = require("node-schedule");
 const logger = require("./util/logger.js");
 
-const logError = (err, entry) => {
-    if (err) {
-        logger.error("Error tweeting: " + err.message, [entry]);
-    }
-};
-
-const post = (entry) => {
-    let client = new TwitterClient();
+const post = (secrets, entry) => {
+    let client = new TwitterClient(secrets);
     let type = entry.type;
     switch (type) {
         case 'link':
@@ -25,15 +18,17 @@ const post = (entry) => {
     }
 };
 
-let run = () => {
+module.exports = (ctx, cb) => {
+    
     let pickAndTweet = (results, index) => {
         let entry = results[index];
-        return post(entry)
+        return post(ctx.secrets, entry)
             .then(() => {
                 logger.info("Entry successfully twitted.", entry);
+                cb(null, entry);
             })
             .catch(err => {
-                logError(err, entry);
+                logger.error("Error tweeting: " + err.message, [entry]);
                 // duplicated tweet or tweet too long, skip & retry
                 if (err.code == 187 || err.code == 186 || err.code == 327) {
                     pickAndTweet(results, index + 1);
@@ -41,14 +36,19 @@ let run = () => {
             });
     };
 
-    new TweetFeeder().run().then(results => {
-        logger.info("Got " + results.length + " entries...");
-        pickAndTweet(results, 0);
-    }).catch(logError);
+    new TweetFeeder(ctx.secrets)
+        .run()
+        .then(results => {
+            logger.info("Got " + results.length + " entries...");
+            if(results.length) {
+                logger.info("Processing...");
+                pickAndTweet(results, 0);
+            }
+            else {
+                var msg = "No entries found!";
+                logger.warn(msg);
+                cb(null, msg);
+            }
+        })
+        .catch(err => logger.error(err));
 };
-
-// run daemon as configured in rule
-schedule.scheduleJob(config.scheduler.rule, run);
-
-// run on start
-run();

@@ -1,15 +1,20 @@
 "use strict";
 
 const Twit = require("twit");
-const config = require("../config.js");
+//const config = require("../config.js");
 const logger = require("../util/logger.js");
 
 class Twitter {
 
-    constructor(search) {
+    constructor(secrets, search) {
         this.name = "Twitter";
         this.search = search;
-        this.twit = new Twit(config.twitter);
+        this.twit = new Twit({
+            consumer_key: secrets.TWITTER_CONSUMER_KEY,
+            consumer_secret: secrets.TWITTER_CONSUMER_SECRET,
+            access_token: secrets.TWITTER_ACCESS_TOKEN_KEY,
+            access_token_secret: secrets.TWITTER_ACCESS_TOKEN_SECRET
+        });
     }
 
     run() {

@@ -2,6 +2,7 @@
 
 const validUrl = require("valid-url");
 const HtmlProvider = require("./html-provider.js");
+const logger = require("../util/logger.js");
 const sourceUrl = "https://slashdot.org/";
 
 class Slashdot extends HtmlProvider {
@@ -22,6 +23,7 @@ class Slashdot extends HtmlProvider {
         var $items = $("h2.story");
 
         if (!$items.length) {
+            logger.warn("No entries for provider " + this.name);
             cb(null, []);
             return;
         }

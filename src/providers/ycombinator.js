@@ -23,6 +23,7 @@ class Ycombinator extends HtmlProvider {
         var $itemInfo = $("table.itemlist").find("td.subtext");
 
         if (!$items.length || $items.length !== $itemInfo.length) {
+            logger.warn("No entries for provider " + this.name);
             cb(null, []);
             return;
         }
