@@ -2,7 +2,6 @@
 
 const TweetFeeder = require("./providers/composite-feeder.js");
 const TwitterClient = require("./twitter-client");
-const schedule = require("node-schedule");
 const logger = require("./util/logger.js");
 
 const post = (secrets, entry) => {
