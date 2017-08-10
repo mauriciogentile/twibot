@@ -18,7 +18,7 @@
   },
   "scripts": {
     "start": "wt create -w -b --secrets-file src/.secrets .",
-    "publish": "wt cron schedule -b --secrets-file src/.secrets 1m ."
+    "publish": "wt cron schedule -b --secrets-file src/.secrets 5h ."
   },
   "devDependencies": {
     "wt-cli": "^6.1.0"
