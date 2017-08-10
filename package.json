@@ -17,8 +17,8 @@
     "winston-mail": "^1.3.0"
   },
   "scripts": {
-    "start": "wt create -w -b --secrets-file src/.secrets .",
-    "publish": "wt cron schedule -b --secrets-file src/.secrets 5h ."
+    "start": "wt create -w -b --secrets-file 'src/.secrets' .",
+    "publish": "wt cron schedule -b --secrets-file \"src/.secrets\" 12h ."
   },
   "devDependencies": {
     "wt-cli": "^6.1.0"
