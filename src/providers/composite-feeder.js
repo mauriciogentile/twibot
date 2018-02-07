@@ -27,6 +27,7 @@ class CompositeFeeder {
         let promises = [];
 
         providers.forEach(provider => {
+            logger.info("Running " + provider.name);
             promises.push(provider.run());
         });
 
@@ -45,7 +46,6 @@ class CompositeFeeder {
         
         let providers = [
             new Twitter(secrets, "#nodejs, #NodeJs, #JavaScript"),
-            new Twitter(secrets, "@@home_timeline"),
             new Slashdot(),
             new Ycombinator()
         ];

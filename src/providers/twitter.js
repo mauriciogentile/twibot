@@ -31,7 +31,7 @@ class Twitter {
 
     searchTweets(params) {
         return this.twit.get("search/tweets", params).then(response => {
-            if(response.data.statuses.errors) {
+            if (response.data.statuses.errors) {
                 logger.warn("Error searching Twitter", response.data.statuses.errors);
                 return [];
             }

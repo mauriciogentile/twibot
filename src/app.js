@@ -18,7 +18,7 @@ const post = (secrets, entry) => {
 };
 
 module.exports = (ctx, cb) => {
-    
+
     let pickAndTweet = (results, index) => {
         let entry = results[index];
         return post(ctx.secrets, entry)
@@ -39,7 +39,7 @@ module.exports = (ctx, cb) => {
         .run()
         .then(results => {
             logger.info("Got " + results.length + " entries...");
-            if(results.length) {
+            if (results.length) {
                 logger.info("Processing...");
                 pickAndTweet(results, 0);
             }
@@ -48,6 +48,5 @@ module.exports = (ctx, cb) => {
                 logger.warn(msg);
                 cb(null, msg);
             }
-        })
-        .catch(err => logger.error(err));
+        }).catch(err => logger.error(err));
 };
